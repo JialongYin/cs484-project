@@ -41,8 +41,11 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 		dist_sort_size_t max_size = ceil(global_N/nprocs);
     while (i < myDataCount)
     {
-        int target_rank = (global_count+i) / max_size;
-				std::cout << target_rank << "," << global_count << "," << i << "," << max_size <<std::endl << std::flush;
+        int target_rank = int((global_count+i) / max_size);
+				if (target_rank == 4) {
+						std::cout << global_count+i << "," << max_size <<std::endl << std::flush;
+				}
+				// std::cout << target_rank << "," << global_count << "," << i << "," << max_size <<std::endl << std::flush;
         int displacement = (global_count+i) % max_size;
         if (target_rank != rank) {
             MPI_Put(&(data[i]), 1, MPI_TYPE_DIST_SORT_T, target_rank, displacement, 1, MPI_TYPE_DIST_SORT_T, win);
