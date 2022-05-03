@@ -18,6 +18,12 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 /*
 	See the header file ('solution.hpp') for Doxygen docstrings explaining this function and its parameters.
 */
+		dist_sort_t local_sum = 0;
+		for (int i = 0; i < myDataCount; ++i) {
+				local_sum += data[i];
+		}
+		std::cerr << "local_sum before:" << local_sum << ";rank:" << rank << std::endl << std::flush;
+
 		int rank, nprocs;
     MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -57,6 +63,12 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
     }
     MPI_Win_fence(0, win);
     MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
+
+		local_sum = 0;
+		for (int i = 0; i < myDataCount; ++i) {
+				local_sum += rebalancedData[i];
+		}
+		std::cerr << "local_sum after:" << local_sum << ";rank:" << rank << std::endl << std::flush;
 }
 
 void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, dist_sort_t *splitters, dist_sort_size_t *counts, int numSplitters) {
