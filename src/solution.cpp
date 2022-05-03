@@ -34,7 +34,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 
 		dist_sort_size_t global_count = 0;
     MPI_Exscan(&myDataCount, &global_count, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
-		std::cout << "global_count:" << global_count << ";rank:" << rank << std::endl << std:flush;
+		std::cout << "global_count:" << global_count << ";rank:" << rank << std::endl << std::flush;
     MPI_Win win;
     MPI_Win_create(*rebalancedData, (*rCount) * sizeof(dist_sort_t), sizeof(dist_sort_t), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
     MPI_Win_fence(MPI_MODE_NOPRECEDE, win); //fence - there are no epochs before this
