@@ -43,7 +43,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
     while (i < myDataCount)
     {
         int target_rank = int((global_count+i) / max_size);
-				if (target_rank == 4) {
+				if (target_rank == 3) {
 						std::cerr << global_count+i << "," << max_size << std::endl << std::flush;
 				}
 				// std::cout << target_rank << "," << global_count << "," << i << "," << max_size <<std::endl << std::flush;
