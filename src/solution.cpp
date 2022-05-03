@@ -21,7 +21,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 		int rank, nprocs;
     MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-		std::cout << "nprocs:" << nProcs << ";rank:" << rank << std::endl << std::flush;
+		std::cout << "nprocs:" << nprocs << ";rank:" << rank << std::endl << std::flush;
 		dist_sort_size_t global_N;
 		MPI_Allreduce(&myDataCount, &global_N, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
 		std::cout << "global_N:" << global_N << ";myDataCount:" << myDataCount << ";rank:" << rank << std::endl << std::flush;
