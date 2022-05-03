@@ -39,7 +39,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
     MPI_Win_create(*rebalancedData, (*rCount) * sizeof(dist_sort_t), sizeof(dist_sort_t), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
     MPI_Win_fence(MPI_MODE_NOPRECEDE, win); //fence - there are no epochs before this
     int i = 0;
-		dist_sort_size_t max_size = ceil(global_N/nprocs);
+		dist_sort_size_t max_size = ceil((float)global_N/(float)nprocs);
     while (i < myDataCount)
     {
         int target_rank = int((global_count+i) / max_size);
