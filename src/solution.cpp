@@ -18,6 +18,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 /*
 	See the header file ('solution.hpp') for Doxygen docstrings explaining this function and its parameters.
 */
+		std::cerr << "UINT64_MAX:" << UINT64_MAX << std::endl;
 		int rank, nprocs;
     MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
