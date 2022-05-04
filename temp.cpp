@@ -1,19 +1,25 @@
-void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist_sort_t **rebalancedData, dist_sort_size_t *rCount) {
-/*
-	See the header file ('solution.hpp') for Doxygen docstrings explaining this function and its parameters.
-*/
-		int rank, nprocs;
+void my_sort(int N, item *myItems, int *nOut, item **myResult)
+{
+    int rank, nprocs;
     MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-		dist_sort_size_t global_N;
-		MPI_Allreduce(&myDataCount, &global_N, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
-		*rCount = ceil(global_N / nprocs);
-		*rebalancedData = (dist_sort_t*)malloc((*rCount)*sizeof(dist_sort_t));
-
-		dist_sort_size_t global_count = 0;
-    MPI_Exscan(&myDataCount, &global_count, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
-
+    int local_count[nprocs] = {0};
+    for (int i = 0; i < N; ++i)
+    {
+        int index = myItems[i].key;
+        ++local_count[index];
+    }
+    for (int i = 0; i < nprocs; ++i) {
+        MPI_Reduce(&local_count[i], nOut, 1, MPI_INT, MPI_SUM, i, MPI_COMM_WORLD);
+    }
+    // std::cout << (*nOut) << std::endl;
+    int global_count[nprocs] = {0};
+    for (int i = 0; i < nprocs; ++i)
+    {
+        MPI_Exscan(&local_count[i], &global_count[i], 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+        // std::cout << global_count[i] << std::endl;
+    }
     MPI_Win win;
     *myResult = (item *)malloc((*nOut) * sizeof(item));
     MPI_Win_create(*myResult, (*nOut) * sizeof(item), sizeof(item), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
@@ -43,5 +49,4 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
     // for (int i = 0; i < (*nOut); ++i) {
     //     std::cout << rank << ":" << (*myResult)[i].key << std::endl;
     // }
-
 }
