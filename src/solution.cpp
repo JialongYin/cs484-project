@@ -100,7 +100,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 
 				// std::cerr << "pass here 1.1" << std::endl;
 
-				memset(counts, 0, numSplitters);
+				memset(counts, 0, numSplitters*sizeof(dist_sort_size_t));
 				dist_sort_size_t j = 0;
 				for (dist_sort_size_t i = 0; i < data_size; ++i) {
 						if (data[i] <= splitters[j]) {
@@ -122,7 +122,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 				// std::cerr << "pass here 3" << std::endl;
 
 				if (rank == 0) {
-						memset(counts, 0, numSplitters);
+						memset(counts, 0, numSplitters*sizeof(dist_sort_size_t));
 						for (dist_sort_size_t i = 0; i < nprocs*numSplitters; ++i) {
 								counts[i%numSplitters] += counts_buffer[i];
 								std::cerr << "counts_buffer" << i << ":" << counts_buffer[i] << ":rank:" << rank << std::endl;
