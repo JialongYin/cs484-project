@@ -95,7 +95,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 
 				dist_sort_size_t *counts_buffer = NULL;
 				if (rank == 0) {
-						counts_buffer = (dist_sort_size_t*)malloc(nProcs*numSplitters*sizeof(dist_sort_size_t));
+						counts_buffer = (dist_sort_size_t*)malloc(nprocs*numSplitters*sizeof(dist_sort_size_t));
 				}
 				MPI_Gather(counts, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, counts_buffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
 
