@@ -71,7 +71,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 		dist_sort_size_t *splitter_index;
 		if (rank == 0) {
 			splitter_index = (dist_sort_size_t*)malloc(numSplitters*sizeof(dist_sort_size_t));
-			dist_sort_size_t interval = ceil(float(data_size)/float(numSplitters))
+			dist_sort_size_t interval = ceil(float(data_size)/float(numSplitters));
 			for (dist_sort_size_t i = 0; i < data_size; ++i) {
 					if ((i+1) % interval == 0 || i == data_size-1) {
 							splitters[i/interval] = data[i];
@@ -118,6 +118,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						}
 						if (done) {
 								free(counts_buffer);
+								free(splitter_index);
 								break;
 						}
 						for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
