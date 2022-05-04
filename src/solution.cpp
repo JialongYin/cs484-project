@@ -26,7 +26,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 		dist_sort_t local_sum = 0;
 		for (dist_sort_size_t i = 0; i < myDataCount; ++i) {
 				// local_sum += data[i];
-				std::cerr << "data[i]:" << data[i] << ";rank:" << rank << std::endl;
+				std::cerr << "data" << i << ":" << data[i] << ";rank:" << rank << std::endl;
 		}
 		// std::cerr << "local_sum before:" << local_sum << ";rank:" << rank << std::endl << std::flush;
 
@@ -69,7 +69,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 		// local_sum = 0;
 		for (dist_sort_size_t i = 0; i < (*rCount); ++i) {
 				// local_sum += (*rebalancedData)[i];
-				std::cerr << "(*rebalancedData)[i]:" << (*rebalancedData)[i] << ";rank:" << rank << std::endl;
+				std::cerr << "(*rebalancedData)" << i << ":" << (*rebalancedData)[i] << ";rank:" << rank << std::endl;
 		}
 		// std::cerr << "local_sum after:" << local_sum << ";rank:" << rank << std::endl << std::flush;
 }
