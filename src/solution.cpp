@@ -22,11 +22,11 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
     MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 		// std::cerr << "nprocs:" << nprocs << ";rank:" << rank << std::endl << std::flush;
-		dist_sort_t local_sum = 0;
-		for (dist_sort_size_t i = 0; i < myDataCount; ++i) {
-				// local_sum += data[i];
-				std::cerr << "data" << i << ":" << data[i] << ";rank:" << rank << std::endl;
-		}
+		// dist_sort_t local_sum = 0;
+		// for (dist_sort_size_t i = 0; i < myDataCount; ++i) {
+		// 		// local_sum += data[i];
+		// 		std::cerr << "data" << i << ":" << data[i] << ";rank:" << rank << std::endl;
+		// }
 		// std::cerr << "local_sum before:" << local_sum << ";rank:" << rank << std::endl << std::flush;
 
 		dist_sort_size_t global_N;
@@ -39,7 +39,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 		}
 		*rebalancedData = (dist_sort_t*)malloc((*rCount)*sizeof(dist_sort_t));
 
-		std::cerr << "myDataCount:" << myDataCount << ";*rCount:" << *rCount << ";rank:" << rank << std::endl;
+		// std::cerr << "myDataCount:" << myDataCount << ";*rCount:" << *rCount << ";rank:" << rank << std::endl;
 
 
 		dist_sort_size_t global_count = 0;
@@ -69,10 +69,10 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
     MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
 
 		// local_sum = 0;
-		for (dist_sort_size_t i = 0; i < (*rCount); ++i) {
+		// for (dist_sort_size_t i = 0; i < (*rCount); ++i) {
 				// local_sum += (*rebalancedData)[i];
-				std::cerr << "(*rebalancedData)" << i << ":" << (*rebalancedData)[i] << ";rank:" << rank << std::endl;
-		}
+				// std::cerr << "(*rebalancedData)" << i << ":" << (*rebalancedData)[i] << ";rank:" << rank << std::endl;
+		// }
 		// std::cerr << "local_sum after:" << local_sum << ";rank:" << rank << std::endl << std::flush;
 }
 
