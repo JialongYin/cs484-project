@@ -33,9 +33,9 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 		MPI_Allreduce(&myDataCount, &global_N, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
 		// std::cerr << "global_N:" << global_N << ";myDataCount:" << myDataCount << ";rank:" << rank << std::endl << std::flush;
 		if (rank < nprocs-1) {
-				*rCount = ceil(global_N/nprocs);
+				*rCount = ceil(float(global_N)/float(nprocs));
 		} else {
-				*rCount = global_N - ceil(global_N/nprocs) * (nprocs-1);
+				*rCount = global_N - cceil(float(global_N)/float(nprocs)) * (nprocs-1);
 		}
 		*rebalancedData = (dist_sort_t*)malloc((*rCount)*sizeof(dist_sort_t));
 
@@ -52,7 +52,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 		dist_sort_size_t max_size = ceil((float)global_N/(float)nprocs);
     while (i < myDataCount)
     {
-        int target_rank = int((global_count+i) / max_size);
+        int target_rank = int((float)(global_count+i) / (float)max_size);
 				// if (target_rank == 3) {
 				// 		std::cerr << global_count << "," << i << "," << max_size << std::endl << std::flush;
 				// }
