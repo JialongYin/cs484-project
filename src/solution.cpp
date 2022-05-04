@@ -27,7 +27,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 		for (dist_sort_size_t i = 0; i < myDataCount; ++i) {
 				local_sum += data[i];
 		}
-		std::cerr << "local_sum before:" << local_sum/10000000000000 << ";rank:" << rank << std::endl << std::flush;
+		std::cerr << "local_sum before:" << local_sum/1000000000000000 << ";rank:" << rank << std::endl << std::flush;
 
 		dist_sort_size_t global_N;
 		MPI_Allreduce(&myDataCount, &global_N, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
@@ -66,10 +66,10 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
     MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
 
 		local_sum = 0;
-		for (dist_sort_size_t i = 0; i < myDataCount; ++i) {
+		for (dist_sort_size_t i = 0; i < (*rCount); ++i) {
 				local_sum += (*rebalancedData)[i];
 		}
-		std::cerr << "local_sum after:" << local_sum/10000000000000 << ";rank:" << rank << std::endl << std::flush;
+		std::cerr << "local_sum after:" << local_sum/1000000000000000 << ";rank:" << rank << std::endl << std::flush;
 }
 
 void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, dist_sort_t *splitters, dist_sort_size_t *counts, int numSplitters) {
