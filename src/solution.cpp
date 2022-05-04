@@ -68,6 +68,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 		dist_sort_size_t global_N;
 		MPI_Allreduce(&data_size, &global_N, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
 
+		std::cerr << "pass here 0" << std::endl;
 		dist_sort_size_t *splitter_index;
 		if (rank == 0) {
 			splitter_index = (dist_sort_size_t*)malloc(numSplitters*sizeof(dist_sort_size_t));
@@ -79,6 +80,8 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 					}
 			}
 		}
+
+		std::cerr << "pass here 1" << std::endl;
 
 		while (true) {
 				MPI_Bcast(splitters, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
@@ -93,11 +96,15 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						}
 				}
 
+				std::cerr << "pass here 2" << std::endl;
+
 				dist_sort_size_t *counts_buffer = NULL;
 				if (rank == 0) {
 						counts_buffer = (dist_sort_size_t*)malloc(nprocs*numSplitters*sizeof(dist_sort_size_t));
 				}
 				MPI_Gather(counts, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, counts_buffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
+
+				std::cerr << "pass here 3" << std::endl;
 
 				if (rank == 0) {
 						memset(counts, 0, numSplitters);
