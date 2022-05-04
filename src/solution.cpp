@@ -35,7 +35,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 		if (rank < nprocs-1) {
 				*rCount = ceil(float(global_N)/float(nprocs));
 		} else {
-				*rCount = global_N - cceil(float(global_N)/float(nprocs)) * (nprocs-1);
+				*rCount = global_N - ceil(float(global_N)/float(nprocs)) * (nprocs-1);
 		}
 		*rebalancedData = (dist_sort_t*)malloc((*rCount)*sizeof(dist_sort_t));
 
