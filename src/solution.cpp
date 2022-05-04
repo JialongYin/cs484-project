@@ -19,7 +19,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 	See the header file ('solution.hpp') for Doxygen docstrings explaining this function and its parameters.
 */
 		dist_sort_t local_sum = 0;
-		for (int i = 0; i < myDataCount; ++i) {
+		for (dist_sort_size_t i = 0; i < myDataCount; ++i) {
 				local_sum += data[i];
 		}
 		std::cerr << "local_sum before:" << local_sum << ";rank:" << rank << std::endl << std::flush;
@@ -53,7 +53,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 				// 		std::cerr << global_count << "," << i << "," << max_size << std::endl << std::flush;
 				// }
 				// std::cout << target_rank << "," << global_count << "," << i << "," << max_size <<std::endl << std::flush;
-        int displacement = (global_count+i) % max_size;
+        dist_sort_size_t displacement = (global_count+i) % max_size;
         if (target_rank != rank) {
             MPI_Put(&(data[i]), 1, MPI_TYPE_DIST_SORT_T, target_rank, displacement, 1, MPI_TYPE_DIST_SORT_T, win);
         } else {
@@ -65,7 +65,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
     MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
 
 		local_sum = 0;
-		for (int i = 0; i < myDataCount; ++i) {
+		for (dist_sort_size_t i = 0; i < myDataCount; ++i) {
 				local_sum += rebalancedData[i];
 		}
 		std::cerr << "local_sum after:" << local_sum << ";rank:" << rank << std::endl << std::flush;
