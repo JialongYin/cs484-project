@@ -83,12 +83,22 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 
 		// std::cerr << "pass here 1" << std::endl;
 
+		for (int i = 0; i < data_size; ++i) {
+				std::cerr << "data" << i << ":" << data[i] << ":rank:" << rank << std::endl;
+		}
+		int debug = 0;
+
 		while (true) {
-				std::cerr << "pass here 1" << std::endl;
+				// std::cerr << "pass here 1" << std::endl;
+				if (rank == 0) {
+						for (int i = 0; i < splitter_index; ++i) {
+								std::cerr << "splitter_index" << i << ":" << splitter_index[i] << ":rank:" << rank << std::endl;
+						}
+				}
 
 				MPI_Bcast(splitters, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
 
-				std::cerr << "pass here 1.1" << std::endl;
+				// std::cerr << "pass here 1.1" << std::endl;
 
 				memset(counts, 0, numSplitters);
 				dist_sort_size_t j = 0;
@@ -100,23 +110,23 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						}
 				}
 
-				std::cerr << "pass here 2" << std::endl;
+				// std::cerr << "pass here 2" << std::endl;
 
 				dist_sort_size_t *counts_buffer = NULL;
 				if (rank == 0) {
 						counts_buffer = (dist_sort_size_t*)malloc(nprocs*numSplitters*sizeof(dist_sort_size_t));
 				}
-				std::cerr << "pass here 2.1" << std::endl;
+				// std::cerr << "pass here 2.1" << std::endl;
 				MPI_Gather(counts, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, counts_buffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
 
-				std::cerr << "pass here 3" << std::endl;
+				// std::cerr << "pass here 3" << std::endl;
 
 				if (rank == 0) {
 						memset(counts, 0, numSplitters);
 						for (dist_sort_size_t i = 0; i < nprocs*numSplitters; ++i) {
 								counts[i%numSplitters] += counts_buffer[i];
 						}
-						std::cerr << "pass here 3.1" << std::endl;
+						// std::cerr << "pass here 3.1" << std::endl;
 
 						dist_sort_size_t prefix_counts = 0;
 						bool done = true;
@@ -130,18 +140,21 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 										done = false;
 								}
 						}
-						std::cerr << "pass here 3.2" << std::endl;
+						// std::cerr << "pass here 3.2" << std::endl;
 						if (done) {
 								free(counts_buffer);
 								free(splitter_index);
 								break;
 						}
-						std::cerr << "pass here 3.3" << std::endl;
+						// std::cerr << "pass here 3.3" << std::endl;
 						for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
 									dist_sort_size_t index = splitter_index[i];
 									splitters[i] = data[index];
 						}
 				}
+
+				debug++;
+				if (debug == 3) exit();
 		}
 }
 
