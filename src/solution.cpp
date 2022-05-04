@@ -18,7 +18,6 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 /*
 	See the header file ('solution.hpp') for Doxygen docstrings explaining this function and its parameters.
 */
-		std::cerr << "UINT64_MAX:" << UINT64_MAX << ";myDataCount:" << myDataCount << std::endl;
 		int rank, nprocs;
     MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -39,6 +38,9 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 				*rCount = global_N - ceil(global_N/nprocs) * (nprocs-1);
 		}
 		*rebalancedData = (dist_sort_t*)malloc((*rCount)*sizeof(dist_sort_t));
+
+		std::cerr << "myDataCount:" << myDataCount << ";*rCount:" << *rCount << ";rank:" << rank << std::endl;
+
 
 		dist_sort_size_t global_count = 0;
     MPI_Exscan(&myDataCount, &global_count, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
