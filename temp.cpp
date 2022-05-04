@@ -1,52 +1,39 @@
-void my_sort(int N, item *myItems, int *nOut, item **myResult)
-{
-    int rank, nprocs;
+void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist_sort_t **rebalancedData, dist_sort_size_t *rCount) {
+/*
+	See the header file ('solution.hpp') for Doxygen docstrings explaining this function and its parameters.
+*/
+		int rank, nprocs;
     MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    int local_count[nprocs] = {0};
-    for (int i = 0; i < N; ++i)
-    {
-        int index = myItems[i].key;
-        ++local_count[index];
-    }
-    for (int i = 0; i < nprocs; ++i) {
-        MPI_Reduce(&local_count[i], nOut, 1, MPI_INT, MPI_SUM, i, MPI_COMM_WORLD);
-    }
-    // std::cout << (*nOut) << std::endl;
-    int global_count[nprocs] = {0};
-    for (int i = 0; i < nprocs; ++i)
-    {
-        MPI_Exscan(&local_count[i], &global_count[i], 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-        // std::cout << global_count[i] << std::endl;
-    }
-    MPI_Win win;
-    *myResult = (item *)malloc((*nOut) * sizeof(item));
-    MPI_Win_create(*myResult, (*nOut) * sizeof(item), sizeof(item), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
-    MPI_Win_fence(MPI_MODE_NOPRECEDE, win); //fence - there are no epochs before this
-    int i = 0;
-    int send_count[nprocs] = {0};
-    while (i < N)
-    {
-        int target_rank = myItems[i].key;
-        int displacement = global_count[target_rank] + send_count[target_rank];
-        if (target_rank != rank) {
-            MPI_Put(&(myItems[i]), 2, MPI_INT, target_rank, displacement, 2, MPI_INT, win);
-        } else {
-            (*myResult)[displacement].key = myItems[i].key;
-            (*myResult)[displacement].value = myItems[i].value;
-        }
-        send_count[target_rank] += 1;
-        ++i;
+		dist_sort_size_t global_N;
+		MPI_Allreduce(&myDataCount, &global_N, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
+		if (rank < nprocs-1) {
+				*rCount = ceil(float(global_N)/float(nprocs));
+		} else {
+				*rCount = global_N - ceil(float(global_N)/float(nprocs)) * (nprocs-1);
+		}
+		*rebalancedData = (dist_sort_t*)malloc((*rCount)*sizeof(dist_sort_t));
 
-        // std::cout << myItems[i].key << "," << myItems[i].value << std::endl << std::flush;
-        // std::cout << "rank:" << rank << ";item:" << myItems[i].key << "," << myItems[i].value << ";target:" << target_rank << ";displacement:" << displacement << std::endl
-        //           << std::flush;
+
+		dist_sort_size_t global_count = 0;
+    MPI_Exscan(&myDataCount, &global_count, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Win win;
+    MPI_Win_create(*rebalancedData, (*rCount) * sizeof(dist_sort_t), sizeof(dist_sort_t), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
+    MPI_Win_fence(MPI_MODE_NOPRECEDE, win); //fence - there are no epochs before this
+    dist_sort_size_t i = 0;
+		dist_sort_size_t max_size = ceil((float)global_N/(float)nprocs);
+    while (i < myDataCount)
+    {
+        int target_rank = int((float)(global_count+i) / (float)max_size);
+        dist_sort_size_t displacement = (global_count+i) % max_size;
+        if (target_rank != rank) {
+            MPI_Put(&(data[i]), 1, MPI_TYPE_DIST_SORT_T, target_rank, displacement, 1, MPI_TYPE_DIST_SORT_T, win);
+        } else {
+            (*rebalancedData)[displacement] = data[i];
+        }
+        ++i;
     }
     MPI_Win_fence(0, win);
     MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
-
-    // for (int i = 0; i < (*nOut); ++i) {
-    //     std::cout << rank << ":" << (*myResult)[i].key << std::endl;
-    // }
 }
