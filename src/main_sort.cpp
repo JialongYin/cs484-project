@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
 		srand(cmdln_seed+rank);
 	}else{
 		// unsigned int use_base_seed = time(0);
-		unsigned int use_base_seed = 0
+		unsigned int use_base_seed = 0;
 		srand(use_base_seed+rank);
 		if(0==rank){
 			std::cout << "Using seed : " << use_base_seed << std::endl;
