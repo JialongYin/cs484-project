@@ -101,7 +101,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 
 				if (rank == 0) {
 						memset(counts, 0, numSplitters);
-						for (dist_sort_size_t i = 0; i < nProcs*numSplitters; ++i) {
+						for (dist_sort_size_t i = 0; i < nprocs*numSplitters; ++i) {
 								counts[i%numSplitters] += counts_buffer[i];
 						}
 						dist_sort_size_t prefix_counts = 0;
