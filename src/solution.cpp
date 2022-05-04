@@ -68,7 +68,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 		dist_sort_size_t global_N;
 		MPI_Allreduce(&data_size, &global_N, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
 
-		std::cerr << "pass here 0" << std::endl;
+		// std::cerr << "pass here 0" << std::endl;
 		dist_sort_size_t *splitter_index;
 		if (rank == 0) {
 			splitter_index = (dist_sort_size_t*)malloc(numSplitters*sizeof(dist_sort_size_t));
@@ -81,10 +81,14 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 			}
 		}
 
-		std::cerr << "pass here 1" << std::endl;
+		// std::cerr << "pass here 1" << std::endl;
 
 		while (true) {
+				std::cerr << "pass here 1" << std::endl;
+
 				MPI_Bcast(splitters, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
+
+				std::cerr << "pass here 1.1" << std::endl;
 
 				memset(counts, 0, numSplitters);
 				dist_sort_size_t j = 0;
@@ -102,6 +106,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 				if (rank == 0) {
 						counts_buffer = (dist_sort_size_t*)malloc(nprocs*numSplitters*sizeof(dist_sort_size_t));
 				}
+				std::cerr << "pass here 2.1" << std::endl;
 				MPI_Gather(counts, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, counts_buffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
 
 				std::cerr << "pass here 3" << std::endl;
@@ -111,6 +116,8 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						for (dist_sort_size_t i = 0; i < nprocs*numSplitters; ++i) {
 								counts[i%numSplitters] += counts_buffer[i];
 						}
+						std::cerr << "pass here 3.1" << std::endl;
+
 						dist_sort_size_t prefix_counts = 0;
 						bool done = true;
 						for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
@@ -123,11 +130,13 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 										done = false;
 								}
 						}
+						std::cerr << "pass here 3.2" << std::endl;
 						if (done) {
 								free(counts_buffer);
 								free(splitter_index);
 								break;
 						}
+						std::cerr << "pass here 3.3" << std::endl;
 						for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
 									dist_sort_size_t index = splitter_index[i];
 									splitters[i] = data[index];
