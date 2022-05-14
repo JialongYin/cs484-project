@@ -158,7 +158,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						}
 						bool done = true;
 						dist_sort_t new_splitters[numSplitters];
-						for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
+						for (dist_sort_size_t i = 0; i < numSplitters-1; ++i) {
 								if (i < ceil((float)(prefix_counts[i])/(float)global_N*numSplitters)) {
 										// if (splitter_index[i] > 0) {
 										// 	--(splitter_index[i]);
