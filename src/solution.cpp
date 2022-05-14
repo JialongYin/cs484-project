@@ -138,10 +138,14 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
 								prefix_counts += counts[i];
 								if (i < ceil((float)(prefix_counts)/(float)global_N*numSplitters)) {
-										--(splitter_index[i]);
+										if (splitter_index[i] > 0) {
+											--(splitter_index[i]);
+										}
 										done = false;
 								} else if (i > ceil((float)(prefix_counts)/(float)global_N*numSplitters)) {
-										++(splitter_index[i]);
+										if (splitter_index[i] < data_size-1) {
+											++(splitter_index[i]);
+										}
 										done = false;
 								}
 						}
