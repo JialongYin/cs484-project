@@ -111,7 +111,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 				// std::cerr << "pass here 1" << std::endl;
 				if (rank == 0) {
 						for (int i = 0; i < numSplitters; ++i) {
-								std::cerr << "splitter" << i << ":" << splitter[i] << ":rank:" << rank << std::endl;
+								std::cerr << "splitters" << i << ":" << splitters[i] << ":rank:" << rank << std::endl;
 						}
 				}
 
