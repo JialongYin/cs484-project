@@ -83,18 +83,18 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 
 		// std::cerr << "pass here 1" << std::endl;
 
-		// for (int i = 0; i < data_size; ++i) {
-		// 		std::cerr << "data" << i << ":" << data[i]/10000000000000000 << ":rank:" << rank << std::endl;
-		// }
-		// int debug = 0;
+		for (int i = 0; i < data_size; ++i) {
+				std::cerr << "data" << i << ":" << data[i]/10000000000000000 << ":rank:" << rank << std::endl;
+		}
+		int debug = 0;
 
 		while (true) {
 				// std::cerr << "pass here 1" << std::endl;
-				// if (rank == 0) {
-				// 		for (int i = 0; i < numSplitters; ++i) {
-				// 				std::cerr << "splitter_index" << i << ":" << splitter_index[i] << ":rank:" << rank << std::endl;
-				// 		}
-				// }
+				if (rank == 0) {
+						for (int i = 0; i < numSplitters; ++i) {
+								std::cerr << "splitter_index" << i << ":" << splitter_index[i] << ":rank:" << rank << std::endl;
+						}
+				}
 
 				MPI_Bcast(splitters, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
 
@@ -125,7 +125,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						memset(counts, 0, numSplitters*sizeof(dist_sort_size_t));
 						for (dist_sort_size_t i = 0; i < nprocs*numSplitters; ++i) {
 								counts[i%numSplitters] += counts_buffer[i];
-								// std::cerr << "counts_buffer" << i << ":" << counts_buffer[i] << ":rank:" << rank << std::endl;
+								std::cerr << "counts_buffer" << i << ":" << counts_buffer[i] << ":rank:" << rank << std::endl;
 						}
 						// std::cerr << "pass here 3.1" << std::endl;
 
@@ -162,8 +162,8 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						}
 				}
 
-				// debug++;
-				// if (debug == 3) break;
+				debug++;
+				if (debug == 3) break;
 		}
 }
 
