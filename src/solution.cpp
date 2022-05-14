@@ -96,7 +96,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 		int debug = 0;
 
 		// Initialize upper/lowwer bound for each splitters
-		dist_sort_t *lowerBound, *upperBound;
+		dist_sort_t *lowerBound = NULL, *upperBound = NULL;
 		if (rank = 0) {
 				lowerBound = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
 				upperBound = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
