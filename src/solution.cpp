@@ -96,17 +96,14 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 		int debug = 0;
 
 		// Initialize upper/lowwer bound for each splitters
-		dist_sort_t *lowerBound = NULL, *upperBound = NULL;
-		if (rank = 0) {
+		dist_sort_t *lowerBound, *upperBound;
+		if (rank == 0) {
 				lowerBound = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
-				std::cerr << "debug0:" << lowerBound[0] << std::endl;
 				upperBound = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
 				for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
 						lowerBound[i] = 0;
-						std::cerr << "debug1:" << lowerBound[0] << std::endl;
 						upperBound[i] = global_max;
 				}
-				std::cerr << "debug2:" << lowerBound[0] << std::endl;
 		}
 
 
@@ -143,7 +140,6 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 				// std::cerr << "pass here 3" << std::endl;
 
 				if (rank == 0) {
-						std::cerr << "debug3:" << lowerBound[0] << std::endl;
 						memset(counts, 0, numSplitters*sizeof(dist_sort_size_t));
 						for (dist_sort_size_t i = 0; i < nprocs*numSplitters; ++i) {
 								counts[i%numSplitters] += counts_buffer[i];
