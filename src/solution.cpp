@@ -65,22 +65,28 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 		int rank, nprocs;
 		MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+		// Find global number of keys in each process
 		dist_sort_size_t global_N;
 		MPI_Allreduce(&data_size, &global_N, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
-
-		// std::cerr << "pass here 0" << std::endl;
-		dist_sort_size_t *splitter_index;
-		if (rank == 0) {
-			splitter_index = (dist_sort_size_t*)malloc(numSplitters*sizeof(dist_sort_size_t));
-			dist_sort_size_t interval = ceil(float(data_size)/float(numSplitters));
-			for (dist_sort_size_t i = 0; i < data_size; ++i) {
-					if ((i+1) % interval == 0 || i == data_size-1) {
-							splitters[i/interval] = data[i];
-							splitter_index[i/interval] = i;
-					}
-			}
+		// Find global maximum in rank0 process
+		dist_sort_t max_value = 0;
+		for (dist_sort_size_t i = 0; i < data_size; ++i) {
+				if (data[i] > max_value) {
+						max_value = data[i];
+				}
 		}
+		dist_sort_t global_max;
+		MPI_Reduce(&max_value, &global_max, 1, MPI_TYPE_DIST_SORT_T, MPI_MAX, 0, MPI_COMM_WORLD);
 
+		// Initialize splitters and assign global_max as last spliiter
+		if (rank == 0) {
+			dist_sort_size_t interval = ceil(float(data_size)/float(numSplitters));
+			for (dist_sort_size_t i = interval-1; i < data_size; i += interval) {
+					splitters[i/interval] = data[i];
+			}
+			splitters[numSplitters-1] = global_max;
+		}
 		// std::cerr << "pass here 1" << std::endl;
 
 		for (int i = 0; i < data_size; ++i) {
@@ -88,13 +94,26 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 		}
 		int debug = 0;
 
+		// Initialize upper/lowwer bound for each splitters
+		dist_sort_t *lowerBound, upperBound;
+		if (rank = 0) {
+				lowerBound = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
+				upperBound = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
+				for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
+						lowerBound[i] = 0;
+						upperBound[i] = global_max;
+				}
+		}
+
+
+		// Implement binary search to update them in each iterator
 		while (true) {
 				// std::cerr << "pass here 1" << std::endl;
-				if (rank == 0) {
-						for (int i = 0; i < numSplitters; ++i) {
-								std::cerr << "splitter_index" << i << ":" << splitter_index[i] << ":rank:" << rank << std::endl;
-						}
-				}
+				// if (rank == 0) {
+				// 		for (int i = 0; i < numSplitters; ++i) {
+				// 				std::cerr << "splitter_index" << i << ":" << splitter_index[i] << ":rank:" << rank << std::endl;
+				// 		}
+				// }
 
 				MPI_Bcast(splitters, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
 
@@ -117,7 +136,6 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 				}
 				// std::cerr << "pass here 2.1" << std::endl;
 				MPI_Gather(counts, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, counts_buffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
-
 				// std::cerr << "pass here 3" << std::endl;
 
 				if (rank == 0) {
@@ -132,32 +150,52 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						// 		std::cerr << "counts" << i << ":" << counts[i] << ":rank:" << rank << std::endl;
 						// }
 
-						dist_sort_size_t prefix_counts = 0;
+						dist_sort_size_t prefix_counts[numSplitters];
+						prefix_counts[0] = counts[0];
+						for (dist_sort_size_t i = 1; i < numSplitters; ++i) {
+								prefix_counts[i] += counts[i];
+						}
 						bool done = true;
+						dist_sort_t new_splitters[numSplitters];
 						for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
-								prefix_counts += counts[i];
-								if (i < ceil((float)(prefix_counts)/(float)global_N*numSplitters)) {
-										if (splitter_index[i] > 0) {
-											--(splitter_index[i]);
+								if (i < ceil((float)(prefix_counts[i])/(float)global_N*numSplitters)) {
+										// if (splitter_index[i] > 0) {
+										// 	--(splitter_index[i]);
+										// }
+										dist_sort_size_t k = i;
+										while (i < ceil((float)(prefix_counts[k])/(float)global_N*numSplitters)) {
+												--k;
 										}
+										lowerBound[i] = max(lowerBound[i], splitters[k]);
+										upperBound[i] = min(upperBound[i], splitters[i]);
 										done = false;
-								} else if (i > ceil((float)(prefix_counts)/(float)global_N*numSplitters)) {
-										if (splitter_index[i] < data_size-1) {
-											++(splitter_index[i]);
+								} else if (i > ceil((float)(prefix_counts[i])/(float)global_N*numSplitters)) {
+										// if (splitter_index[i] < data_size-1) {
+										// 	++(splitter_index[i]);
+										// }
+										dist_sort_size_t k = i;
+										while (i > ceil((float)(prefix_counts[k])/(float)global_N*numSplitters)) {
+												++k;
 										}
+										lowerBound[i] = max(lowerBound[i], splitters[i]);
+										upperBound[i] = min(upperBound[i], splitters[k]);
 										done = false;
+								} else {
+										lowerBound[i] = splitters[i];
+										upperBound[i] = splitters[i];
 								}
+								new_splitters[i] = (lowerBound[i] + upperBound[i]) / 2;
 						}
 						// std::cerr << "pass here 3.2" << std::endl;
 						if (done) {
 								free(counts_buffer);
-								free(splitter_index);
+								free(lowerBound);
+								free(upperBound);
 								break;
 						}
 						// std::cerr << "pass here 3.3" << std::endl;
 						for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
-									dist_sort_size_t index = splitter_index[i];
-									splitters[i] = data[index];
+									splitters[i] = new_splitters[i];
 						}
 				}
 
