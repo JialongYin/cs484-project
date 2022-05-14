@@ -159,18 +159,21 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						dist_sort_t new_splitters[numSplitters];
 						// std::cerr << "pass here 3.1" << std::endl;
 						for (dist_sort_size_t i = 0; i < numSplitters-1; ++i) {
-								std::cerr << "pass here 3.1" << std::endl;
+								// std::cerr << "pass here 3.1" << std::endl;
 								if (i < ceil((float)(prefix_counts[i])/(float)global_N*numSplitters)) {
 										// if (splitter_index[i] > 0) {
 										// 	--(splitter_index[i]);
 										// }
-										std::cerr << "pass here 3.1.1" << std::endl;
+										std::cerr << "pass here 3.1.1.1" << std::endl;
 										dist_sort_size_t k = i;
+										std::cerr << "pass here 3.1.1.2:" << k << std::endl;
 										while (k > 0 && i < ceil((float)(prefix_counts[k])/(float)global_N*numSplitters)) {
 												--k;
+												std::cerr << "pass here 3.1.1.3:" << k << std::endl;
 										}
 										lowerBound[i] = std::max(lowerBound[i], splitters[k]);
 										upperBound[i] = std::min(upperBound[i], splitters[i]);
+										std::cerr << "pass here 3.1.1.4:" << i << std::endl;
 										done = false;
 								} else if (i > ceil((float)(prefix_counts[i])/(float)global_N*numSplitters)) {
 										// if (splitter_index[i] < data_size-1) {
