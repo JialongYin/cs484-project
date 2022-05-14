@@ -62,6 +62,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 /*
 	See the header file ('solution.hpp') for Doxygen docstrings explaining this function and its parameters.
 */
+		uint64_t DEBUG = 10000000000000000;
 		int rank, nprocs;
 		MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -90,7 +91,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 		// std::cerr << "pass here 1" << std::endl;
 
 		for (int i = 0; i < data_size; ++i) {
-				std::cerr << "data" << i << ":" << data[i]/10000000000000000 << ":rank:" << rank << std::endl;
+				std::cerr << "data" << i << ":" << data[i]/DEBUG << ":rank:" << rank << std::endl;
 		}
 		int debug = 0;
 
@@ -111,7 +112,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 				// std::cerr << "pass here 1" << std::endl;
 				if (rank == 0) {
 						for (int i = 0; i < numSplitters; ++i) {
-								std::cerr << "splitters" << i << ":" << splitters[i] << ":rank:" << rank << std::endl;
+								std::cerr << "splitters" << i << ":" << splitters[i]/DEBUG << ":rank:" << rank << std::endl;
 						}
 				}
 
