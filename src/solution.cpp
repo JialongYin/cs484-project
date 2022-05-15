@@ -213,12 +213,21 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 
 		dist_sort_t *splittersBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
 		dist_sort_t *countsBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
+		if (rank == 0) {
+				for (int i = 0; i < numSplitters; ++i) {
+						splittersBuffer[i] = splitters[i];
+						countsBuffer[i] = counts[i];
+				}
+		}
 		MPI_Bcast(splittersBuffer, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
 		MPI_Bcast(countsBuffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
 		std::cerr << "pass here 3.1:" << rank << std::endl;
 
 		*recvData = (dist_sort_t*)malloc(countsBuffer[rank]*sizeof(dist_sort_t));
 		*rDataCount = countsBuffer[rank];
+		// for (int i = 0; i < numSplitters; ++i) {
+		// 		std::cerr << "countsBuffer" << i << ":" << countsBuffer[i] << ":rank:" << rank << std::endl;
+		// }
 
 		dist_sort_size_t local_counts[numSplitters] = {0};
 		dist_sort_size_t j = 0;
