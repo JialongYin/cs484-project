@@ -213,23 +213,25 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		*recvData = (dist_sort_t*)malloc(countsBuffer[rank]*sizeof(dist_sort_t));
 		*rDataCount = countsBuffer[rank];
 
-		int local_counts[numSplitters] = {0};
+		dist_sort_size_t local_counts[numSplitters] = {0};
 		dist_sort_size_t j = 0;
-		for (int i = 0; i < sDataCount; ++i) {
+		for (dist_sort_size_t i = 0; i < sDataCount; ++i) {
 				while (sendData[i] > splittersBuffer[j]) {
 						++j;
 				}
 				local_counts[j] += 1;
 		}
-		int global_counts[numSplitters] = {0};
-		for (int i = 0; i < numSplitters; ++i) {
+		dist_sort_size_t global_counts[numSplitters] = {0};
+		for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
 				MPI_Exscan(&local_counts[i], &global_counts[i], 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 		}
+
+
 		MPI_Win win;
 		MPI_Win_create(*recvData, countsBuffer[rank]*sizeof(dist_sort_t), sizeof(dist_sort_t), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
 		MPI_Win_fence(MPI_MODE_NOPRECEDE, win);
-		int i = 0;
-		int send_counts[nprocs] = {0};
+		dist_sort_size_t i = 0;
+		dist_sort_size_t send_counts[nprocs] = {0};
 		j = 0;
 		while (i < sDataCount)
 		{
@@ -237,7 +239,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 						++j;
 				}
 				int target_rank = j;
-				int displacement = global_counts[target_rank] + send_counts[target_rank];
+				dist_sort_size_t displacement = global_counts[target_rank] + send_counts[target_rank];
 				if (target_rank != rank) {
 						MPI_Put(&(sendData[i]), 1, MPI_TYPE_DIST_SORT_T, target_rank, displacement, 1, MPI_TYPE_DIST_SORT_T, win);
 				} else {
