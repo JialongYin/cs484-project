@@ -197,8 +197,8 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						break;
 				}
 
-				debug++;
-				if (debug == 20) break;
+				// debug++;
+				// if (debug == 20) break;
 
 		}
 }
