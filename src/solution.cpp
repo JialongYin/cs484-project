@@ -201,11 +201,15 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 /*
 	See the header file ('solution.hpp') for Doxygen docstrings explaining this function and its parameters.
 */
+		uint64_t DEBUG = 10000000000000000;
 		int rank, nprocs;
 		MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
 		std::cerr << "sDataCount start:" << sDataCount << ":rank:" << rank << std::endl;
+		for (dist_sort_size_t i = 0; i < sDataCount; ++i) {
+				std::cerr << "data" << i << ":" << sendData[i]/DEBUG << ":rank:" << rank << std::endl;
+		}
 
 		dist_sort_t *splittersBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
 		dist_sort_t *countsBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
@@ -237,12 +241,6 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		dist_sort_size_t send_counts[nprocs] = {0};
 		j = 0;
 		std::cerr << "pass here 3.3:" << rank << std::endl;
-
-		uint64_t DEBUG = 10000000000000000;
-		// for (dist_sort_size_t i = 0; i < sDataCount; ++i) {
-		// 		std::cerr << "data" << i << ":" << sendData[i]/DEBUG << ":rank:" << rank << std::endl;
-		// }
-		std::cerr << "sDataCount process:" << sDataCount << ":rank:" << rank << std::endl;
 
 		while (i < sDataCount)
 		{
