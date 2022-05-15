@@ -164,7 +164,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 										// if (splitter_index[i] > 0) {
 										// 	--(splitter_index[i]);
 										// }
-										std::cerr << "pass here 3.1.1:" << i << ":" << (float)(prefix_counts[i])/(float)global_N*numSplitters << std::endl;
+										std::cerr << "pass here 3.1.1:" << i << ":" << (float)(prefix_counts[i]) << ":" << (float)global_N << ":" << numSplitters << std::endl;
 										dist_sort_size_t k = i;
 										while (k > 0 && i < ceil((float)(prefix_counts[k])/(float)global_N*numSplitters)) {
 												--k;
