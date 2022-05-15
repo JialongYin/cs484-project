@@ -201,10 +201,11 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 /*
 	See the header file ('solution.hpp') for Doxygen docstrings explaining this function and its parameters.
 */
-		std::cerr << "sDataCount start:" << sDataCount << ":rank:" << rank << std::endl;
 		int rank, nprocs;
 		MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+		std::cerr << "sDataCount start:" << sDataCount << ":rank:" << rank << std::endl;
 
 		dist_sort_t *splittersBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
 		dist_sort_t *countsBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
