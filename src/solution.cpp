@@ -249,11 +249,13 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 				}
 				send_counts[target_rank] += 1;
 				++i;
+				std::cerr << "pass here 3.4:" << rank << std::endl;
 		}
 		MPI_Win_fence(0, win);
 		MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
 		free(countsBuffer);
 		free(splittersBuffer);
+		std::cerr << "pass here 3.5:" << rank << std::endl;
 }
 
 void sort(dist_sort_t *data, dist_sort_size_t size) {
