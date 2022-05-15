@@ -119,6 +119,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 				std::cerr << "pass here 1.1:" << rank << std::endl;
 				MPI_Bcast(splitters, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
 
+
 				// std::cerr << "pass here 1.1" << std::endl;
 
 				memset(counts, 0, numSplitters*sizeof(dist_sort_size_t));
@@ -140,6 +141,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 				MPI_Gather(counts, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, counts_buffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
 				// std::cerr << "pass here 3" << std::endl;
 
+				bool done = true;
 				if (rank == 0) {
 						memset(counts, 0, numSplitters*sizeof(dist_sort_size_t));
 						for (dist_sort_size_t i = 0; i < nprocs*numSplitters; ++i) {
@@ -156,7 +158,6 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						for (dist_sort_size_t i = 1; i < numSplitters; ++i) {
 								prefix_counts[i] += counts[i];
 						}
-						bool done = true;
 						dist_sort_t new_splitters[numSplitters];
 						// std::cerr << "pass here 3.1" << std::endl;
 						for (dist_sort_size_t i = 0; i < numSplitters-1; ++i) {
@@ -200,18 +201,19 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 								std::cerr << "lowerBound" << i << ":" << lowerBound[i]/DEBUG << ":rank:" << rank << std::endl;
 								std::cerr << "upperBound" << i << ":" << upperBound[i]/DEBUG << ":rank:" << rank << std::endl;
 						}
-						// std::cerr << "pass here 3.2" << std::endl;
-						if (done) {
-								std::cerr << "pass here 3.1.4:" << rank << std::endl;
-								free(counts_buffer);
-								free(lowerBound);
-								free(upperBound);
-								break;
-						}
-						// std::cerr << "pass here 3.3" << std::endl;
 						for (dist_sort_size_t i = 0; i < numSplitters-1; ++i) {
 									splitters[i] = new_splitters[i];
 						}
+				}
+				MPI_Bcast(&done, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
+				if (done) {
+						std::cerr << "pass here 3.1.4:" << rank << std::endl;
+						if (rank == 0) {
+							free(counts_buffer);
+							free(lowerBound);
+							free(upperBound);
+						}
+						break;
 				}
 
 				debug++;
