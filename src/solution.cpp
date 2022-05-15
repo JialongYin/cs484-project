@@ -209,6 +209,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		dist_sort_t *countsBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
 		MPI_Bcast(splittersBuffer, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
 		MPI_Bcast(countsBuffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
+		std::cerr << "pass here 3.1:" << rank << std::endl;
 
 		*recvData = (dist_sort_t*)malloc(countsBuffer[rank]*sizeof(dist_sort_t));
 		*rDataCount = countsBuffer[rank];
@@ -225,7 +226,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
 				MPI_Exscan(&local_counts[i], &global_counts[i], 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 		}
-
+		std::cerr << "pass here 3.2:" << rank << std::endl;
 
 		MPI_Win win;
 		MPI_Win_create(*recvData, countsBuffer[rank]*sizeof(dist_sort_t), sizeof(dist_sort_t), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
@@ -233,6 +234,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		dist_sort_size_t i = 0;
 		dist_sort_size_t send_counts[nprocs] = {0};
 		j = 0;
+		std::cerr << "pass here 3.3:" << rank << std::endl;
 		while (i < sDataCount)
 		{
 				if (i >= local_counts[j]) {
