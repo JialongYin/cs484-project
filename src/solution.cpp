@@ -236,6 +236,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		j = 0;
 		std::cerr << "pass here 3.3:" << rank << std::endl;
 
+		uint64_t DEBUG = 10000000000000000;
 		for (dist_sort_size_t i = 0; i < sDataCount; ++i) {
 				std::cerr << "data" << i << ":" << sendData[i]/DEBUG << ":rank:" << rank << std::endl;
 		}
