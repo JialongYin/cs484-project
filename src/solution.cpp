@@ -206,20 +206,20 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-		if (rank == 0) {
-				for (int i = 0; i < numSplitters; ++i) {
-						std::cerr << "splitters" << i << ":" << splitters[i]/DEBUG << ":rank:" << rank << std::endl;
-				}
-				for (int i = 0; i < sDataCount; ++i) {
-						std::cerr << "counts" << i << ":" << counts[i] << ":rank:" << rank << std::endl;
-				}
-		}
+		// if (rank == 0) {
+		// 		for (int i = 0; i < numSplitters; ++i) {
+		// 				std::cerr << "splitters" << i << ":" << splitters[i]/DEBUG << ":rank:" << rank << std::endl;
+		// 		}
+		// 		for (int i = 0; i < sDataCount; ++i) {
+		// 				std::cerr << "counts" << i << ":" << counts[i] << ":rank:" << rank << std::endl;
+		// 		}
+		// }
 
 
-		std::cerr << "sDataCount:" << sDataCount << ":rank:" << rank << std::endl;
-		for (dist_sort_size_t i = 0; i < sDataCount; ++i) {
-				std::cerr << "data" << i << ":" << sendData[i]/DEBUG << ":rank:" << rank << std::endl;
-		}
+		// std::cerr << "sDataCount:" << sDataCount << ":rank:" << rank << std::endl;
+		// for (dist_sort_size_t i = 0; i < sDataCount; ++i) {
+		// 		std::cerr << "data" << i << ":" << sendData[i]/DEBUG << ":rank:" << rank << std::endl;
+		// }
 
 		dist_sort_t *splittersBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
 		dist_sort_t *countsBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
@@ -261,13 +261,13 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		j = 0;
 		// std::cerr << "pass here 3.3:" << rank << std::endl;
 
-		for (int i = 0; i < numSplitters; ++i) {
-				std::cerr << "local_counts" << i << ":" << local_counts[i] << ":rank:" << rank << std::endl;
-		}
+		// for (int i = 0; i < numSplitters; ++i) {
+		// 		std::cerr << "local_counts" << i << ":" << local_counts[i] << ":rank:" << rank << std::endl;
+		// }
 
 		while (i < sDataCount)
 		{
-				std::cerr << "i" << i << ";local_counts" << j << ":" << local_counts[j] << ":rank:" << rank << std::endl;
+				// std::cerr << "i" << i << ";local_counts" << j << ":" << local_counts[j] << ":rank:" << rank << std::endl;
 				if (i >= local_counts[j]) {
 						++j;
 				}
@@ -288,9 +288,9 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		free(splittersBuffer);
 		// std::cerr << "pass here 3.5:" << rank << std::endl;
 
-		for (dist_sort_size_t i = 0; i < *rDataCount; ++i) {
-				std::cerr << "data" << i << ":" << (*recvData)[i]/DEBUG << ":rank:" << rank << std::endl;
-		}
+		// for (dist_sort_size_t i = 0; i < *rDataCount; ++i) {
+		// 		std::cerr << "data" << i << ":" << (*recvData)[i]/DEBUG << ":rank:" << rank << std::endl;
+		// }
 		// std::cerr << "rDataCount:" << *rDataCount << ":rank:" << rank << std::endl;
 }
 
