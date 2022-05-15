@@ -270,11 +270,13 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 				std::cerr << "local_counts" << i << ":" << local_counts[i] << ":rank:" << rank << std::endl;
 		}
 
+		dist_sort_size_t pre_local_counts = local_counts[0];
 		while (i < sDataCount)
 		{
 				// std::cerr << "i" << i << ";local_counts" << j << ":" << local_counts[j] << ":rank:" << rank << std::endl;
-				if (i >= local_counts[j]) {
+				if (i >= pre_local_counts) {
 						++j;
+						pre_local_counts += local_counts[j];
 				}
 				int target_rank = j;
 				dist_sort_size_t displacement = global_counts[target_rank] + send_counts[target_rank];
