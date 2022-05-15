@@ -32,8 +32,8 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 		*rebalancedData = (dist_sort_t*)malloc((*rCount)*sizeof(dist_sort_t));
 
 
-		dist_sort_size_t global_count = 0;
-    MPI_Exscan(&myDataCount, &global_count, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
+		dist_sort_size_t global_counts = 0;
+    MPI_Exscan(&myDataCount, &global_counts, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
     MPI_Win win;
     MPI_Win_create(*rebalancedData, (*rCount) * sizeof(dist_sort_t), sizeof(dist_sort_t), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
     MPI_Win_fence(MPI_MODE_NOPRECEDE, win); //fence - there are no epochs before this
@@ -41,8 +41,8 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
 		dist_sort_size_t max_size = ceil((float)global_N/(float)nprocs);
     while (i < myDataCount)
     {
-        int target_rank = int((float)(global_count+i) / (float)max_size);
-        dist_sort_size_t displacement = (global_count+i) % max_size;
+        int target_rank = int((float)(global_counts+i) / (float)max_size);
+        dist_sort_size_t displacement = (global_counts+i) % max_size;
         if (target_rank != rank) {
             MPI_Put(&(data[i]), 1, MPI_TYPE_DIST_SORT_T, target_rank, displacement, 1, MPI_TYPE_DIST_SORT_T, win);
         } else {
@@ -201,8 +201,63 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 /*
 	See the header file ('solution.hpp') for Doxygen docstrings explaining this function and its parameters.
 */
+		int rank, nprocs;
+		MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
+		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
+		dist_sort_t *splittersBuffer, countsBuffer;
+		if (rank == 0) {
+				splittersBuffer = splitters;
+				countsBuffer = counts;
+		} else {
+				splittersBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
+				countsBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
+		}
+		MPI_Bcast(splittersBuffer, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
+		MPI_Bcast(countsBuffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
 
+		*recvData = (dist_sort_t*)malloc(countsBuffer[rank]*sizeof(dist_sort_t));
+		*rDataCount = countsBuffer[rank];
+
+		int local_counts[numSplitters] = {0};
+		dist_sort_size_t j = 0;
+		for (int i = 0; i < sDataCount; ++i) {
+				while (sendData[i] > splittersBuffer[j]) {
+						++j;
+				}
+				local_counts[j] += 1;
+		}
+		int global_counts[numSplitters] = {0};
+		for (int i = 0; i < numSplitters; ++i) {
+				MPI_Exscan(&local_counts[i], &global_counts[i], 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+		}
+		MPI_Win win;
+		MPI_Win_create(*recvData, countsBuffer[rank]*sizeof(dist_sort_t), sizeof(dist_sort_t), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
+		MPI_Win_fence(MPI_MODE_NOPRECEDE, win);
+		int i = 0;
+		int send_counts[nprocs] = {0};
+		j = 0;
+		while (i < sDataCount)
+		{
+				if (i >= local_counts[j]) {
+						++j;
+				}
+				int target_rank = j;
+				int displacement = global_counts[target_rank] + send_counts[target_rank];
+				if (target_rank != rank) {
+						MPI_Put(&(sendData[i]), 1, MPI_TYPE_DIST_SORT_T, target_rank, displacement, 1, MPI_TYPE_DIST_SORT_T, win);
+				} else {
+						(*recvData)[displacement] = sendData[i]
+				}
+				send_counts[target_rank] += 1;
+				++i;
+		}
+		MPI_Win_fence(0, win);
+		MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
+		if (rank != 0) {
+				free(countsBuffer);
+				free(splittersBuffer);
+		}
 }
 
 void sort(dist_sort_t *data, dist_sort_size_t size) {
