@@ -89,10 +89,10 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 			splitters[numSplitters-1] = global_max;
 		}
 
-		for (int i = 0; i < data_size; ++i) {
-				std::cerr << "data" << i << ":" << data[i]/DEBUG << ":rank:" << rank << std::endl;
-		}
-		int debug = 0;
+		// for (int i = 0; i < data_size; ++i) {
+		// 		std::cerr << "data" << i << ":" << data[i]/DEBUG << ":rank:" << rank << std::endl;
+		// }
+		// int debug = 0;
 
 		// Initialize upper/lowwer bound for each splitters
 		dist_sort_t *lowerBound, *upperBound;
@@ -107,11 +107,11 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 
 		// Implement binary search to update them in each iterator
 		while (true) {
-				if (rank == 0) {
-						for (int i = 0; i < numSplitters; ++i) {
-								std::cerr << "splitters" << i << ":" << splitters[i]/DEBUG << ":rank:" << rank << std::endl;
-						}
-				}
+				// if (rank == 0) {
+				// 		for (int i = 0; i < numSplitters; ++i) {
+				// 				std::cerr << "splitters" << i << ":" << splitters[i]/DEBUG << ":rank:" << rank << std::endl;
+				// 		}
+				// }
 				MPI_Bcast(splitters, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
 
 				memset(counts, 0, numSplitters*sizeof(dist_sort_size_t));
@@ -136,9 +136,9 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 								counts[i%numSplitters] += counts_buffer[i];
 								// std::cerr << "counts_buffer" << i << ":" << counts_buffer[i] << ":rank:" << rank << std::endl;
 						}
-						for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
-								std::cerr << "counts" << i << ":" << counts[i] << ":rank:" << rank << std::endl;
-						}
+						// for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
+						// 		std::cerr << "counts" << i << ":" << counts[i] << ":rank:" << rank << std::endl;
+						// }
 						dist_sort_size_t prefix_counts[numSplitters];
 						prefix_counts[0] = counts[0];
 						for (dist_sort_size_t i = 1; i < numSplitters; ++i) {
@@ -149,7 +149,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						done = true;
 						for (dist_sort_size_t i = 0; i < numSplitters-1; ++i) {
 								if ((i+1) * global_N < prefix_counts[i] * numSplitters) {
-										std::cerr << "pass here 3.1.1:" << (i+1) << ":" << global_N << ":" << prefix_counts[i] << ":" << numSplitters << std::endl;
+										// std::cerr << "pass here 3.1.1:" << (i+1) << ":" << global_N << ":" << prefix_counts[i] << ":" << numSplitters << std::endl;
 										// std::cerr << "pass here 3.1.1" << std::endl;
 										dist_sort_size_t k = i;
 										while (k > 0 && i < ceil((float)(prefix_counts[k])/(float)global_N*numSplitters)) {
@@ -161,7 +161,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 										done = false;
 								} else if ((i+1) * global_N > prefix_counts[i] * numSplitters) {
 										// std::cerr << "pass here 3.1.2:" << (i+1) << ":" << global_N << ":" << prefix_counts[i] << ":" << numSplitters << std::endl;
-										std::cerr << "pass here 3.1.2" << std::endl;
+										// std::cerr << "pass here 3.1.2" << std::endl;
 										dist_sort_size_t k = i;
 										while (k < numSplitters-1 && i > ceil((float)(prefix_counts[k])/(float)global_N*numSplitters)) {
 												++k;
@@ -172,13 +172,13 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 										done = false;
 								} else {
 										// std::cerr << "pass here 3.1.3:" << (i+1) << ":" << global_N << ":" << prefix_counts[i] << ":" << numSplitters << std::endl;
-										std::cerr << "pass here 3.1.3" << std::endl;
+										// std::cerr << "pass here 3.1.3" << std::endl;
 										lowerBound[i] = splitters[i];
 										upperBound[i] = splitters[i];
 								}
 								new_splitters[i] = lowerBound[i] + ((upperBound[i] - lowerBound[i]) / 2);
-								std::cerr << "lowerBound" << i << ":" << lowerBound[i]/DEBUG << ":rank:" << rank << std::endl;
-								std::cerr << "upperBound" << i << ":" << upperBound[i]/DEBUG << ":rank:" << rank << std::endl;
+								// std::cerr << "lowerBound" << i << ":" << lowerBound[i]/DEBUG << ":rank:" << rank << std::endl;
+								// std::cerr << "upperBound" << i << ":" << upperBound[i]/DEBUG << ":rank:" << rank << std::endl;
 								// std::cerr << "new_splitters" << i << ":" << new_splitters[i]/DEBUG << ":rank:" << rank << std::endl;
 						}
 						for (dist_sort_size_t i = 0; i < numSplitters-1; ++i) {
