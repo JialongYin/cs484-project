@@ -251,8 +251,13 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		j = 0;
 		std::cerr << "pass here 3.3:" << rank << std::endl;
 
+		for (int i = 0; i < numSplitters; ++i) {
+				std::cerr << "local_counts" << i << ":" << local_counts[i] << ":rank:" << rank << std::endl;
+		}
+
 		while (i < sDataCount)
 		{
+				std::cerr << "i" << i << ";local_counts" << j << ":" << local_counts[j] << ":rank:" << rank << std::endl;
 				if (i >= local_counts[j]) {
 						++j;
 				}
@@ -273,10 +278,10 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		free(splittersBuffer);
 		std::cerr << "pass here 3.5:" << rank << std::endl;
 
-		// for (dist_sort_size_t i = 0; i < *rDataCount; ++i) {
-		// 		std::cerr << "data" << i << ":" << (*recvData)[i]/DEBUG << ":rank:" << rank << std::endl;
-		// }
-		std::cerr << "rDataCount:" << *rDataCount << ":rank:" << rank << std::endl;
+		for (dist_sort_size_t i = 0; i < *rDataCount; ++i) {
+				std::cerr << "data" << i << ":" << (*recvData)[i]/DEBUG << ":rank:" << rank << std::endl;
+		}
+		// std::cerr << "rDataCount:" << *rDataCount << ":rank:" << rank << std::endl;
 }
 
 void sort(dist_sort_t *data, dist_sort_size_t size) {
