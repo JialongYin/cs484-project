@@ -205,14 +205,8 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-		dist_sort_t *splittersBuffer, countsBuffer;
-		if (rank == 0) {
-				splittersBuffer = splitters;
-				countsBuffer = counts;
-		} else {
-				splittersBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
-				countsBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
-		}
+		dist_sort_t *splittersBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
+		dist_sort_t *countsBuffer = (dist_sort_t*)malloc(numSplitters*sizeof(dist_sort_t));
 		MPI_Bcast(splittersBuffer, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
 		MPI_Bcast(countsBuffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
 
@@ -254,10 +248,8 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		}
 		MPI_Win_fence(0, win);
 		MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
-		if (rank != 0) {
-				free(countsBuffer);
-				free(splittersBuffer);
-		}
+		free(countsBuffer);
+		free(splittersBuffer);
 }
 
 void sort(dist_sort_t *data, dist_sort_size_t size) {
