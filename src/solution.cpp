@@ -136,7 +136,8 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 								counts[i%numSplitters] += counts_buffer[i];
 						}
 						for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
-								std::cerr << "counts" << i << ":" << counts[i] << ":rank:" << rank << ";";
+								// std::cerr << "counts" << i << ":" << counts[i] << ":rank:" << rank << ";";
+								std::cerr << "counts" << i << ":" << counts[i] << ";";
 						}
 						std::cerr << std::endl;
 						dist_sort_size_t prefix_counts[numSplitters];
