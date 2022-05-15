@@ -235,6 +235,11 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		dist_sort_size_t send_counts[nprocs] = {0};
 		j = 0;
 		std::cerr << "pass here 3.3:" << rank << std::endl;
+
+		for (dist_sort_size_t i = 0; i < sDataCount; ++i) {
+				std::cerr << "data" << i << ":" << sendData[i]/DEBUG << ":rank:" << rank << std::endl;
+		}
+
 		while (i < sDataCount)
 		{
 				if (i >= local_counts[j]) {
@@ -256,6 +261,10 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		free(countsBuffer);
 		free(splittersBuffer);
 		std::cerr << "pass here 3.5:" << rank << std::endl;
+
+		for (dist_sort_size_t i = 0; i < *rDataCount; ++i) {
+				std::cerr << "data" << i << ":" << (*recvData)[i]/DEBUG << ":rank:" << rank << std::endl;
+		}
 }
 
 void sort(dist_sort_t *data, dist_sort_size_t size) {
