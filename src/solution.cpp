@@ -147,8 +147,8 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						dist_sort_t new_splitters[numSplitters];
 						done = true;
 						for (dist_sort_size_t i = 0; i < numSplitters-1; ++i) {
-								if (numSplitters < prefix_counts[i] * numSplitters - (i+1) * global_N) {
-										// std::cerr << "pass here 3.1.1:" << (i+1) << ":" << global_N << ":" << prefix_counts[i] << ":" << numSplitters << std::endl;
+								if (0 < prefix_counts[i] * numSplitters - (i+1) * global_N) {
+										std::cerr << "pass here 3.1.1:" << (i+1) << ":" << global_N << ":" << prefix_counts[i] << ":" << numSplitters << std::endl;
 										// std::cerr << "pass here 3.1.1" << std::endl;
 										dist_sort_size_t k = i;
 										while (k > 0 && i < ceil((float)(prefix_counts[k])/(float)global_N*numSplitters)) {
@@ -158,8 +158,8 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 												lowerBound[i] = std::max(lowerBound[i], splitters[k]);
 										upperBound[i] = std::min(upperBound[i], splitters[i]);
 										done = false;
-								} else if ((i+1) * global_N - prefix_counts[i] * numSplitters > numSplitters) {
-										// std::cerr << "pass here 3.1.2:" << (i+1) << ":" << global_N << ":" << prefix_counts[i] << ":" << numSplitters << std::endl;
+								} else if ((i+1) * global_N - prefix_counts[i] * numSplitters > 0) {
+										std::cerr << "pass here 3.1.2:" << (i+1) << ":" << global_N << ":" << prefix_counts[i] << ":" << numSplitters << std::endl;
 										// std::cerr << "pass here 3.1.2" << std::endl;
 										dist_sort_size_t k = i;
 										while (k < numSplitters-1 && i > ceil((float)(prefix_counts[k])/(float)global_N*numSplitters)) {
