@@ -39,6 +39,7 @@ void rebalance(const dist_sort_t *data, const dist_sort_size_t myDataCount, dist
     MPI_Win_fence(MPI_MODE_NOPRECEDE, win); //fence - there are no epochs before this
     dist_sort_size_t i = 0;
 		dist_sort_size_t max_size = ceil((float)global_N/(float)nprocs);
+		// TODO: add #pragma parallel for
     while (i < myDataCount)
     {
         int target_rank = int((float)(global_counts+i) / (float)max_size);
@@ -71,6 +72,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 		dist_sort_size_t global_N;
 		MPI_Allreduce(&data_size, &global_N, 1, MPI_TYPE_DIST_SORT_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
 		// Find global maximum in rank0 process
+		// TODO: add #pragma parallel for
 		dist_sort_t max_value = 0;
 		for (dist_sort_size_t i = 0; i < data_size; ++i) {
 				if (data[i] > max_value) {
@@ -83,6 +85,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 		// Initialize splitters and assign global_max as last spliiter
 		if (rank == 0) {
 			dist_sort_size_t interval = floor(float(data_size)/float(numSplitters));
+			// TODO: add #pragma parallel for
 			for (dist_sort_size_t i = interval-1; i < data_size; i += interval) {
 					splitters[i/interval] = data[i];
 			}
@@ -115,6 +118,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 				MPI_Bcast(splitters, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
 				memset(counts, 0, numSplitters*sizeof(dist_sort_size_t));
 				dist_sort_size_t j = 0;
+				// TODO: add #pragma parallel for
 				for (dist_sort_size_t i = 0; i < data_size; ++i) {
 						while (data[i] > splitters[j]) {
 								j += 1;
@@ -246,6 +250,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 
 		dist_sort_size_t local_counts[numSplitters] = {0};
 		dist_sort_size_t j = 0;
+		// TODO: add #pragma parallel for
 		for (dist_sort_size_t i = 0; i < sDataCount; ++i) {
 				while (sendData[i] > splittersBuffer[j]) {
 						++j;
@@ -271,6 +276,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		// }
 
 		dist_sort_size_t pre_local_counts = local_counts[0];
+		// TODO: add #pragma parallel for
 		while (i < sDataCount)
 		{
 				// std::cerr << "i" << i << ";local_counts" << j << ":" << local_counts[j] << ":rank:" << rank << std::endl;

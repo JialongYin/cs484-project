@@ -112,8 +112,7 @@ int main(int argc, char **argv) {
 	if(use_cmdline_seed){
 		srand(cmdln_seed+rank);
 	}else{
-		// unsigned int use_base_seed = time(0);
-		unsigned int use_base_seed = 1652615421;
+		unsigned int use_base_seed = time(0);
 		srand(use_base_seed+rank);
 		if(0==rank){
 			std::cout << "Using seed : " << use_base_seed << std::endl;
@@ -138,8 +137,7 @@ int main(int argc, char **argv) {
 	uint64_t confirm_modulus = randuint64() % 0xffffffff;
 
 	// Each rank generates local_N elements with values ranging from 0 to DIST_SORT_MAX
-	// local_N = chooseArraySize(cmdln_size_dist_choice,size_dist_a,size_dist_b);
-	local_N = 4;
+	local_N = chooseArraySize(cmdln_size_dist_choice,size_dist_a,size_dist_b);
 	generateData(cmdln_dist_choice,
 		&starting_data, local_N, 0, DIST_SORT_MAX);
 
