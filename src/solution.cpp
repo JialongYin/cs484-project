@@ -279,7 +279,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 				int target_rank = j;
 				dist_sort_size_t displacement = global_counts[target_rank] + send_counts[target_rank];
 				if (target_rank != rank) {
-						std::err << "attention:" << target_rank << std::endl;
+						std::cerr << "attention:" << target_rank << std::endl;
 						MPI_Put(&(sendData[i]), 1, MPI_TYPE_DIST_SORT_T, target_rank, displacement, 1, MPI_TYPE_DIST_SORT_T, win);
 				} else {
 						(*recvData)[displacement] = sendData[i];
