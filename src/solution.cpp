@@ -129,7 +129,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 				}
 				MPI_Gather(counts, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, counts_buffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
 
-				bool done = true;
+				bool done;
 				if (rank == 0) {
 						memset(counts, 0, numSplitters*sizeof(dist_sort_size_t));
 						for (dist_sort_size_t i = 0; i < nprocs*numSplitters; ++i) {
@@ -145,6 +145,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 								prefix_counts[i] += counts[i];
 						}
 						dist_sort_t new_splitters[numSplitters];
+						done = true;
 						for (dist_sort_size_t i = 0; i < numSplitters-1; ++i) {
 								if ((i+1) * global_N < prefix_counts[i] * numSplitters) {
 										dist_sort_size_t k = i;
