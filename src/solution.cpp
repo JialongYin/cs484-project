@@ -202,7 +202,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						// }
 						// std::cerr << "pass here 3.2" << std::endl;
 						if (done) {
-								// std::cerr << "pass here 3.1.4" << std::endl;
+								std::cerr << "pass here 3.1.4:" << rank << std::endl;
 								free(counts_buffer);
 								free(lowerBound);
 								free(upperBound);
