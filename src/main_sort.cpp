@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
 	} else if (rank == 1) {
 			local_N = 4;
 	} else if (rank == 2) {
-			local_N = 5;
+			local_N = 6;
 	} else {
 			local_N = 4;
 	}
