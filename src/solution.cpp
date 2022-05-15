@@ -178,9 +178,10 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 									splitters[i] = new_splitters[i];
 						}
 				}
+				std::cerr << "pass here 3.1.4" << done << ":" << rank << std::endl;
 				MPI_Bcast(&done, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
 				if (done) {
-						std::cerr << "pass here 3.1.4:" << rank << std::endl;
+						std::cerr << "pass here 3.1.5:" << rank << std::endl;
 						if (rank == 0) {
 							free(counts_buffer);
 							free(lowerBound);
