@@ -206,7 +206,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-		std::cerr << "sDataCount start:" << sDataCount << ":rank:" << rank << std::endl;
+		std::cerr << "sDataCount:" << sDataCount << ":rank:" << rank << std::endl;
 		for (dist_sort_size_t i = 0; i < sDataCount; ++i) {
 				std::cerr << "data" << i << ":" << sendData[i]/DEBUG << ":rank:" << rank << std::endl;
 		}
@@ -267,6 +267,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		// for (dist_sort_size_t i = 0; i < *rDataCount; ++i) {
 		// 		std::cerr << "data" << i << ":" << (*recvData)[i]/DEBUG << ":rank:" << rank << std::endl;
 		// }
+		std::cerr << "rDataCount:" << *rDataCount << ":rank:" << rank << std::endl;
 }
 
 void sort(dist_sort_t *data, dist_sort_size_t size) {
