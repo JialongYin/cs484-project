@@ -82,7 +82,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 
 		// Initialize splitters and assign global_max as last spliiter
 		if (rank == 0) {
-			dist_sort_size_t interval = ceil(float(data_size)/float(numSplitters));
+			dist_sort_size_t interval = floor(float(data_size)/float(numSplitters));
 			for (dist_sort_size_t i = interval-1; i < data_size; i += interval) {
 					splitters[i/interval] = data[i];
 			}
