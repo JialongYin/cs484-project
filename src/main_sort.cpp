@@ -141,9 +141,9 @@ int main(int argc, char **argv) {
 	// local_N = chooseArraySize(cmdln_size_dist_choice,size_dist_a,size_dist_b);
 	// local_N = randuint64() % 6 + 1;
 	if (rank == 0) {
-			local_N = 3;
+			local_N = 2;
 	} else if (rank == 1) {
-			local_N = 6;
+			local_N = 7;
 	} else if (rank == 2) {
 			local_N = 3;
 	} else {
