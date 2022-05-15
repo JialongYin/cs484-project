@@ -93,7 +93,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 		// for (int i = 0; i < data_size; ++i) {
 		// 		std::cerr << "data" << i << ":" << data[i]/DEBUG << ":rank:" << rank << std::endl;
 		// }
-		// int debug = 0;
+		int debug = 0;
 
 		// Initialize upper/lowwer bound for each splitters
 		dist_sort_t *lowerBound, *upperBound;
@@ -214,8 +214,8 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						}
 				}
 
-				// debug++;
-				// if (debug == 5) break;
+				debug++;
+				if (debug == 5) break;
 		}
 }
 
