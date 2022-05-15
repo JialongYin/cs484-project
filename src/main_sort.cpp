@@ -115,7 +115,6 @@ int main(int argc, char **argv) {
 		// unsigned int use_base_seed = time(0);
 		unsigned int use_base_seed = 1652597968;
 		srand(use_base_seed+rank);
-		1652597968
 		if(0==rank){
 			std::cout << "Using seed : " << use_base_seed << std::endl;
 		}
