@@ -89,9 +89,9 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 			splitters[numSplitters-1] = global_max;
 		}
 
-		for (int i = 0; i < data_size; ++i) {
-				std::cerr << "data" << i << ":" << data[i]/DEBUG << ":rank:" << rank << std::endl;
-		}
+		// for (int i = 0; i < data_size; ++i) {
+		// 		std::cerr << "data" << i << ":" << data[i]/DEBUG << ":rank:" << rank << std::endl;
+		// }
 		int debug = 0;
 
 		// Initialize upper/lowwer bound for each splitters
@@ -134,7 +134,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						memset(counts, 0, numSplitters*sizeof(dist_sort_size_t));
 						for (dist_sort_size_t i = 0; i < nprocs*numSplitters; ++i) {
 								counts[i%numSplitters] += counts_buffer[i];
-								std::cerr << "counts_buffer" << i << ":" << counts_buffer[i] << ":rank:" << rank << std::endl;
+								// std::cerr << "counts_buffer" << i << ":" << counts_buffer[i] << ":rank:" << rank << std::endl;
 						}
 						dist_sort_size_t prefix_counts[numSplitters];
 						prefix_counts[0] = counts[0];
