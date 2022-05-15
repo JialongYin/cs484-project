@@ -221,7 +221,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		}
 		MPI_Bcast(splittersBuffer, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
 		MPI_Bcast(countsBuffer, numSplitters, MPI_TYPE_DIST_SORT_SIZE_T, 0, MPI_COMM_WORLD);
-		std::cerr << "pass here 3.1:" << rank << std::endl;
+		// std::cerr << "pass here 3.1:" << rank << std::endl;
 
 		*recvData = (dist_sort_t*)malloc(countsBuffer[rank]*sizeof(dist_sort_t));
 		*rDataCount = countsBuffer[rank];
@@ -241,7 +241,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
 				MPI_Exscan(&local_counts[i], &global_counts[i], 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 		}
-		std::cerr << "pass here 3.2:" << rank << std::endl;
+		// std::cerr << "pass here 3.2:" << rank << std::endl;
 
 		MPI_Win win;
 		MPI_Win_create(*recvData, countsBuffer[rank]*sizeof(dist_sort_t), sizeof(dist_sort_t), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
@@ -249,7 +249,7 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 		dist_sort_size_t i = 0;
 		dist_sort_size_t send_counts[nprocs] = {0};
 		j = 0;
-		std::cerr << "pass here 3.3:" << rank << std::endl;
+		// std::cerr << "pass here 3.3:" << rank << std::endl;
 
 		for (int i = 0; i < numSplitters; ++i) {
 				std::cerr << "local_counts" << i << ":" << local_counts[i] << ":rank:" << rank << std::endl;
@@ -270,13 +270,13 @@ void moveData(const dist_sort_t *const sendData, const dist_sort_size_t sDataCou
 				}
 				send_counts[target_rank] += 1;
 				++i;
-				std::cerr << "pass here 3.4:" << rank << std::endl;
+				// std::cerr << "pass here 3.4:" << rank << std::endl;
 		}
 		MPI_Win_fence(0, win);
 		MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
 		free(countsBuffer);
 		free(splittersBuffer);
-		std::cerr << "pass here 3.5:" << rank << std::endl;
+		// std::cerr << "pass here 3.5:" << rank << std::endl;
 
 		for (dist_sort_size_t i = 0; i < *rDataCount; ++i) {
 				std::cerr << "data" << i << ":" << (*recvData)[i]/DEBUG << ":rank:" << rank << std::endl;
