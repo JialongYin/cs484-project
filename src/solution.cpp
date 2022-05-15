@@ -89,10 +89,10 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 			splitters[numSplitters-1] = global_max;
 		}
 
-		for (int i = 0; i < data_size; ++i) {
-				std::cerr << "data" << i << ":" << data[i]/DEBUG << ":rank:" << rank << std::endl;
-		}
-		int debug = 0;
+		// for (int i = 0; i < data_size; ++i) {
+		// 		std::cerr << "data" << i << ":" << data[i]/DEBUG << ":rank:" << rank << std::endl;
+		// }
+		// int debug = 0;
 
 		// Initialize upper/lowwer bound for each splitters
 		dist_sort_t *lowerBound, *upperBound;
@@ -107,11 +107,11 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 
 		// Implement binary search to update them in each iterator
 		while (true) {
-				if (rank == 0) {
-						for (int i = 0; i < numSplitters; ++i) {
-								std::cerr << "splitters" << i << ":" << splitters[i]/DEBUG << ":rank:" << rank << std::endl;
-						}
-				}
+				// if (rank == 0) {
+				// 		for (int i = 0; i < numSplitters; ++i) {
+				// 				std::cerr << "splitters" << i << ":" << splitters[i]/DEBUG << ":rank:" << rank << std::endl;
+				// 		}
+				// }
 				MPI_Bcast(splitters, numSplitters, MPI_TYPE_DIST_SORT_T, 0, MPI_COMM_WORLD);
 
 				memset(counts, 0, numSplitters*sizeof(dist_sort_size_t));
@@ -135,9 +135,9 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 						for (dist_sort_size_t i = 0; i < nprocs*numSplitters; ++i) {
 								counts[i%numSplitters] += counts_buffer[i];
 						}
-						for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
-								std::cerr << "counts" << i << ":" << counts[i] << ":rank:" << rank << std::endl;
-						}
+						// for (dist_sort_size_t i = 0; i < numSplitters; ++i) {
+						// 		std::cerr << "counts" << i << ":" << counts[i] << ":rank:" << rank << std::endl;
+						// }
 						dist_sort_size_t prefix_counts[numSplitters];
 						prefix_counts[0] = counts[0];
 						for (dist_sort_size_t i = 1; i < numSplitters; ++i) {
@@ -175,8 +175,8 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 										upperBound[i] = splitters[i];
 								}
 								new_splitters[i] = lowerBound[i] + ((upperBound[i] - lowerBound[i]) / 2);
-								std::cerr << "lowerBound" << i << ":" << lowerBound[i]/DEBUG << ":rank:" << rank << std::endl;
-								std::cerr << "upperBound" << i << ":" << upperBound[i]/DEBUG << ":rank:" << rank << std::endl;
+								// std::cerr << "lowerBound" << i << ":" << lowerBound[i]/DEBUG << ":rank:" << rank << std::endl;
+								// std::cerr << "upperBound" << i << ":" << upperBound[i]/DEBUG << ":rank:" << rank << std::endl;
 						}
 						for (dist_sort_size_t i = 0; i < numSplitters-1; ++i) {
 									splitters[i] = new_splitters[i];
@@ -185,7 +185,7 @@ void findSplitters(const dist_sort_t *data, const dist_sort_size_t data_size, di
 				// std::cerr << "pass here 3.1.4:" << done << ":" << rank << std::endl;
 				MPI_Bcast(&done, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
 				if (done) {
-						std::cerr << "pass here 3.1.5:" << rank << std::endl;
+						// std::cerr << "pass here 3.1.5:" << rank << std::endl;
 						if (rank == 0) {
 							free(counts_buffer);
 							free(lowerBound);
