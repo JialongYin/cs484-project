@@ -60,6 +60,6 @@ srun --mpi=pmi2 --ntasks-per-node ${SLURM_NTASKS_PER_NODE} \
 # The code below assumes 1 MPI rank per CPU core.
 echo "Benchmarking"
 echo "Benchmark results" >> ${SLURM_SUBMIT_DIR}/writeup/benchmark.txt
-srun --mpi=pmi2 --ntasks-per-node ${SLURM_NTASKS_PER_NODE} \
-	--cpu-bind=cores --ntasks ${SLURM_NTASKS} \
+srun --mpi=pmi2 \
+	--cpu-bind=cores --ntasks 2 \
 	/projects/cs/cs484/sing_exec.sh ./bin/sorter | grep "RESULTS" >> ${SLURM_SUBMIT_DIR}/writeup/benchmark-${SLURM_JOB_ID}.txt
